@@ -6,6 +6,8 @@ import {
 } from "react-router-dom";
 import Login from "./screens/auth/Login";
 import RegisterPatient from "./components/RegisterPatient";
+import Dashboard from "./screens/Dashboard";
+import PatientReports from "./screens/PatientReports";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path='/register-patient' element={<RegisterPatient />} />
+        <Route path="/dashboard" element={<Dashboard />}/>
+        <Route path='/reports' element={<PatientReports />} />
       </Routes>
     </BrowserRouter>
   );

@@ -40,7 +40,7 @@ function Login() {
               Login
             </Button>
           </Form>
-            <small>Having troubles login?  Contact <a href="mailto:kimperriatest@gmail.com">Admin</a></small>
+            <small>Having troubles login?  Contact <a href="mailto:kimperriatest@gmail.com?subject = Trouble login in to AfyaAPP&body = Dear Kim, I am having issues accessing AfyaAPP">Admin</a></small>
 
         </div>
       </section>

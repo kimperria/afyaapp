@@ -3,10 +3,13 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import Table from 'react-bootstrap/Table';
 import Form from "react-bootstrap/Form";
+import NavBar from '../components/NavBar';
 
 function PatientReports() {
     return (
-        <main className="container container-fluid mt-5">
+        <main className="container container-fluid">
+            <NavBar />
+            <div className="mt-3"></div>
             <Alert variant='secondary' className='text-center'>
                 <h4>Patient Report</h4>
             </Alert>

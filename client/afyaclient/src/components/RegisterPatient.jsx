@@ -2,10 +2,12 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
+import NavBar from "./NavBar";
 
 function RegisterPatient() {
   return (
     <main className="container container-fluid">
+      <NavBar />
       <section className="row align-items-center register_page_position">
         <Alert variant="primary">
           <h3 className="text-center">Registration Page</h3>

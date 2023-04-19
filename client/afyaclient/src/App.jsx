@@ -11,8 +11,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/register-patient' element={ <RegisterPatient /> } />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
+        <Route path='/register-patient' element={<RegisterPatient />} />
       </Routes>
     </BrowserRouter>
   );

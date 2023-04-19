@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import NavBar from "./NavBar";
+import VitalSection from "./VitalSection";
 
 function RegisterPatient() {
   return (
@@ -10,7 +11,7 @@ function RegisterPatient() {
       <NavBar />
       <section className="row align-items-center register_page_position">
         <Alert variant="primary">
-          <h3 className="text-center">Registration Page</h3>
+          <h3 className="text-center">Patient Registration Page</h3>
         </Alert>
         <div className="mx-auto col-10 col-md-8 col-lg-6">
           <Form>
@@ -53,6 +54,10 @@ function RegisterPatient() {
             </section>
           </Form>
         </div>
+      </section>
+
+      <section>
+        <VitalSection />
       </section>
     </main>
   );

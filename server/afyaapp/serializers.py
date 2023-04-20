@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib import auth
-from .models import Profile, PatientInformation
+from .models import Profile, PatientInformation,AppointmentDetails
 
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
@@ -40,3 +40,15 @@ class PatientInformationSerializer(serializers.ModelSerializer):
         model = PatientInformation
 
         fields = ('first_name', 'last_name', 'date_of_birth')
+
+
+class AppointmentSerializer(serializers.ModelSerializer):
+    patient = serializers.CharField()
+    height = serializers.IntegerField()
+    weight = serializers.IntegerField()
+    body_mass_index = serializers.IntegerField()
+
+    class Meta:
+        model = AppointmentDetails
+
+        fields = ('patient', 'height', 'weight', 'body_mass_index')

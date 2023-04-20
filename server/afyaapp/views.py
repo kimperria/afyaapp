@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from .models import Profile
-from .serializers import LoginSerializer, PatientInformationSerializer
+from .serializers import LoginSerializer, PatientInformationSerializer, AppointmentSerializer
 
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -66,3 +66,30 @@ class PatientInformationView(generics.GenericAPIView):
     def put(self, request):
         pass
 
+class AppointmentInformationSerializer(generics.GenericAPIView):
+
+    serializer_class = AppointmentSerializer
+
+    @swagger_auto_schema(operation_summary='Save appointment detail')
+    def post(self, request):
+
+        appointment = request.data
+
+        serializer = self.serializer_class(data=appointment)
+
+        if serializer.is_valid(raise_exception=True):
+
+            response = {
+                'success-status': True,
+                'appointment-status': serializer.data
+            }
+
+            return Response(data=response, status=status.HTTP_200_OK)
+        
+    @swagger_auto_schema(operation_summary='Get appointment information')
+    def get(self, request):
+        pass
+    
+    @swagger_auto_schema(operation_summary='Update appointment information')
+    def put(self, request):
+        pass

@@ -60,6 +60,7 @@ class PatientRecord(models.Model):
     general_health = models.IntegerField(choices=PATIENT_CHOICE, default=UNDEFINED)
     is_onDiet = models.IntegerField(choices=PATIENT_ANSWER, default=PATIENT_ANSWER, null=True, blank=True)
     is_onDrugs = models.IntegerField(choices=PATIENT_ANSWER, default=PATIENT_ANSWER, null=True, blank=True)
+    patient = models.ForeignKey(PatientInformation, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.general_health

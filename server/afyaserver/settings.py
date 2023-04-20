@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'afyaapp.apps.AfyaappConfig',
     ## Third-party applications
     'rest_framework',
+
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

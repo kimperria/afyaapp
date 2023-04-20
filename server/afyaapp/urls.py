@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     path('', views.helloAfya, name='testAPI'),
+    path('auth/login/', views.LoginAPIView.as_view(), name='login')
 ]

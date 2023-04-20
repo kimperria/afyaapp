@@ -4,6 +4,7 @@ from .models import Profile
 
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class LoginSerializer(serializers.ModelSerializer):
@@ -28,3 +29,16 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Disabled account, please contact admin')
         
         return validated_data
+    
+    # def tokens(self):
+    #      refresh = RefreshToken.for_user(self)
+    #      return {
+    #          'refresh-token': str(refresh),
+    #          'access-token': str(refresh.access_token)
+    #      }
+    
+    
+class PatientInformationSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    date_of_birth = serializers.DateField()

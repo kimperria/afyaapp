@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from .models import Profile
+from .models import Profile, PatientInformation
 from .serializers import LoginSerializer, PatientInformationSerializer, AppointmentSerializer
 
 from rest_framework import generics, status
@@ -41,6 +41,7 @@ class LoginAPIView(generics.GenericAPIView):
 class PatientInformationView(generics.GenericAPIView):
 
     serializer_class = PatientInformationSerializer
+    queryset = PatientInformation.objects.all()
 
     @swagger_auto_schema(operation_summary='Save patient information')
     def post(self, request):
@@ -60,7 +61,40 @@ class PatientInformationView(generics.GenericAPIView):
     
     @swagger_auto_schema(operation_summary='Get patient information')
     def get(self, request):
-        pass
+        
+        all_patients = PatientInformation.objects.all()
+
+        serializer = self.serializer_class(instance=all_patients, many=True)
+
+        response = {
+                'success-status': True,
+                'patients': serializer.data
+            }
+        return Response(data=response, status=status.HTTP_200_OK)
+    
+    @swagger_auto_schema(operation_summary='Get patient data by ID')
+    def get(self, request, patient_id):
+        try:
+            patient = PatientInformation.objects.get(id=patient_id)
+
+            serializer = self.serializer_class(instance=patient)
+
+            response = {
+                'success': True,
+                'patient-information': serializer.data
+            }
+
+            return Response(data=response, status=status.HTTP_200_OK)
+        except PatientInformation.DoesNotExist:
+            response = {
+                'success': False,
+                'message': {
+                    'error': 'Patient not found',
+                    'data': 'No patient matches the provided ID'
+                }
+            }
+
+            return Response(data=response, status=status.HTTP_200_OK)
     
     @swagger_auto_schema(operation_summary='Update patient information')
     def put(self, request):

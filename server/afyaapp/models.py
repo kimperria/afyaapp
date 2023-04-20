@@ -27,7 +27,7 @@ class PatientInformation(models.Model):
         return f'Fullname: {self.first_name} ' + self.last_name
 
 class AppointmentDetails(models.Model):
-    patient = models.OneToOneField(PatientInformation, on_delete=models.CASCADE)
+    patient = models.ForeignKey(PatientInformation, on_delete=models.CASCADE)
     height = models.IntegerField()
     weight = models.IntegerField()
     body_mass_index = models.IntegerField()

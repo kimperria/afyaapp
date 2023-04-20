@@ -1,12 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+# from rest_framework_simplejwt.tokens import RefreshToken
 
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='user_profile', on_delete=models.CASCADE)
     
     def __str__(self):
         return self.user.username
+    
+        
+    # def tokens(self):
+    #     refresh = RefreshToken.for_user(self)
+    #     return {
+    #         'refresh-token': str(refresh),
+    #         'access-token': str(refresh.access_token)
+    #     }
 
 class PatientInformation(models.Model):
     first_name = models.CharField(max_length=30)

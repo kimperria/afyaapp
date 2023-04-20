@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 
-from .models import Profile, PatientInformation
+from .models import Profile, PatientInformation, AppointmentDetails
 from .serializers import LoginSerializer, PatientInformationSerializer, AppointmentSerializer
 
 from rest_framework import generics, status
@@ -114,9 +114,10 @@ class PatientInformationView(generics.GenericAPIView):
             return Response(data=response, status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class AppointmentInformationSerializer(generics.GenericAPIView):
+class AppointmentInformationView(generics.GenericAPIView):
 
     serializer_class = AppointmentSerializer
+    queryset = AppointmentDetails.objects.all()
 
     @swagger_auto_schema(operation_summary='Save appointment detail')
     def post(self, request):
@@ -133,11 +134,63 @@ class AppointmentInformationSerializer(generics.GenericAPIView):
             }
 
             return Response(data=response, status=status.HTTP_200_OK)
-        
-    @swagger_auto_schema(operation_summary='Get appointment information')
+    
+
+    @swagger_auto_schema(operation_summary='List all appountments')
     def get(self, request):
-        pass
+        
+        all_appointments = AppointmentDetails.objects.all()
+
+        serializer = self.serializer_class(instance=all_appointments, many=True)
+
+        response = {
+                'success-status': True,
+                'appointments': serializer.data
+            }
+        return Response(data=response, status=status.HTTP_200_OK)
+
+class PatientAppointmentView(generics.GenericAPIView):
+    serializer_class = AppointmentSerializer
+    queryset = AppointmentDetails.objects.all()
+
+    @swagger_auto_schema(operation_summary='Get appointment data by ID')
+    def get(self, request, appointment_id):
+        try:
+            appointment = AppointmentDetails.objects.get(id=appointment_id)
+
+            serializer = self.serializer_class(instance=appointment)
+
+            response = {
+                'success': True,
+                'appointment-information': serializer.data
+            }
+
+            return Response(data=response, status=status.HTTP_200_OK)
+        except AppointmentDetails.DoesNotExist:
+            response = {
+                'success': False,
+                'message': {
+                    'error': 'Appointment not found',
+                    'data': 'No appointment matches the provided ID'
+                }
+            }
+
+            return Response(data=response, status=status.HTTP_200_OK)
     
     @swagger_auto_schema(operation_summary='Update appointment information')
-    def put(self, request):
-        pass
+    def put(self, request, appointment_id):
+        
+        updated_appointment = request.data
+
+        appointment_information = get_object_or_404(PatientInformation, pk=appointment_id)
+
+        serializer = self.serializer_class(data=updated_appointment, instance=appointment_information)
+
+        if serializer.is_valid():
+            serializer.save()
+            response = {
+                'infomation': 'Infomation updated successfully',
+                'data': serializer.data
+            }
+            return Response(data=response, status=status.HTTP_201_CREATED)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)

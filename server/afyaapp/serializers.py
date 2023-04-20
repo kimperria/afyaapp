@@ -15,12 +15,11 @@ class LoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'password')
 
-    def validate(self, attrs):
-        username = attrs.get('username', '')
-        password = attrs.get('password', '')
+    def validate(self, validated_data):
+        username = validated_data['username']
+        password = validated_data['password']
 
         authenticated_user = auth.authenticate(username=username, password=password)
-        print(authenticated_user, password)
 
         if not authenticated_user:
             raise AuthenticationFailed('Invalid credentials, please try again')
@@ -28,7 +27,4 @@ class LoginSerializer(serializers.ModelSerializer):
         if not authenticated_user.is_active:
             raise AuthenticationFailed('Disabled account, please contact admin')
         
-        return {
-            'email': authenticated_user.username,
-            # 'token': authenticated_user.token
-        }
+        return validated_data

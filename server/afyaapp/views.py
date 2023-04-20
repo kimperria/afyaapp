@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 
 from .models import Profile, PatientInformation
@@ -97,8 +97,22 @@ class PatientInformationView(generics.GenericAPIView):
             return Response(data=response, status=status.HTTP_200_OK)
     
     @swagger_auto_schema(operation_summary='Update patient information')
-    def put(self, request):
-        pass
+    def put(self, request, patient_id):
+        
+        updated_information = request.data
+
+        patient_information = get_object_or_404(PatientInformation, pk=patient_id)
+
+        serializer = self.serializer_class(data=updated_information, instance=patient_information)
+
+        if serializer.is_valid():
+            serializer.save()
+            response = {
+                'infomation': 'Infomation updated successfully',
+                'data': serializer.data
+            }
+            return Response(data=response, status=status.HTTP_201_CREATED)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AppointmentInformationSerializer(generics.GenericAPIView):
 

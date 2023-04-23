@@ -33,6 +33,13 @@ At a highlevel this application supports or is configured to support upto 2 user
     2.  Normal patients have a BMI > 18.5 < 25
     3.  BMI > 25 overweight 
 
+
+### Endpoints
+- Authentication enabled with simple-jwt in DRF
+- Documented with swaggerUI
+### Sample endpoints
+![sample endpoints on swagger ui](assets/endpoints_sample.png)
+    
 ## Technologies used
 #### Frontend(client)
 - Vite React + JS

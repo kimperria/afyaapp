@@ -5,8 +5,6 @@ import { logout, setAccessToken } from '../../features/auth/authSlice';
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:8000',
     method: 'POST',
-    credentials: 'include',
-    mode: 'cors',
     /// handles data sent to the backend
     // safe practise
     prepareHeaders: (

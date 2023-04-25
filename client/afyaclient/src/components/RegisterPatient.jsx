@@ -5,11 +5,12 @@ import Alert from "react-bootstrap/Alert";
 import NavBar from "./NavBar";
 import VitalSection from "./VitalSection";
 
-import { usePatientRegistrationMutation } from "../features/patients/patientAPISlice";
+import { useRegisterNewPatientMutation } from "../features/patients/patientAPISlice";
+
 
 function RegisterPatient() {
 
-  const [patientInfo, { isLoading }] = usePatientRegistrationMutation();
+  const [patientInfo, { isLoading }] = useRegisterNewPatientMutation();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState({});
@@ -37,11 +38,6 @@ function RegisterPatient() {
 
     const newPatientData = await patientInfo({firstName, lastName, dateOfBirth, gender}).unwrap();
     console.log(newPatientData)
-    try{
-      console.log()
-    }catch (error) {
-      console.log(error)
-    }
   };
 
   return (
@@ -52,7 +48,7 @@ function RegisterPatient() {
           <h3 className="text-center">Patient Registration Page</h3>
         </Alert>
         <div className="mx-auto col-10 col-md-8 col-lg-6">
-          <Form>
+          <Form onSubmit={submitPatientInformation}>
             <Form.Group className="mb-3" controlId="formBasicFirstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control type="text" placeholder="First name" value={firstName} onChange={handleFirstNameInput} ref={patientRef} />

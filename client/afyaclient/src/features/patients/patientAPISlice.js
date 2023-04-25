@@ -4,7 +4,7 @@ export const registerNewPatientSlice = newPatientSlice.injectEndpoints({
     endpoints: builder => ({
         registerNewPatient: builder.mutation({
             query: patientInformation => ({
-                url: '/api/patient/',
+                url: '/api/new-patient/',
                 method: 'POST',
                 body: patientInformation,
                 headers: {

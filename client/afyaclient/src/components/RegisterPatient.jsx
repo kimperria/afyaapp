@@ -14,7 +14,7 @@ function RegisterPatient() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState({});
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState(false);
   const patientRef = useRef();
 
   const handleFirstNameInput = (e) => {
@@ -30,7 +30,8 @@ function RegisterPatient() {
   };
 
   const handleGenderInput = (e) => {
-    setGender(e.target.value)
+    let gender = e.target.value;
+    setGender(gender)
   }
 
   const submitPatientInformation = async (e) => {
@@ -66,10 +67,10 @@ function RegisterPatient() {
 
             <Form.Group className="mb-3" controlId="formBasicGender">
               <Form.Select aria-label="Default select example" onChange={handleGenderInput} ref={patientRef}>
-                <option>Please select your gender</option>
-                <option value="1">Male</option>
-                <option value="2">Female</option>
-                <option value="3">Non-Binary</option>
+                <option value=''>Please select your gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Non-Binary</option>
               </Form.Select>
             </Form.Group>
 

@@ -35,11 +35,12 @@ class PatientInformationSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     date_of_birth = serializers.DateField()
+    gender = serializers.CharField()
 
     class Meta:
         model = PatientInformation
 
-        fields = ('first_name', 'last_name', 'date_of_birth')
+        fields = ('first_name', 'last_name', 'date_of_birth', 'gender')
 
 
 class AppointmentSerializer(serializers.ModelSerializer):

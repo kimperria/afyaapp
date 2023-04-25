@@ -38,28 +38,38 @@ class LoginAPIView(generics.GenericAPIView):
 
             return Response(data=response, status=status.HTTP_200_OK)
         
-class PatientInformationView(generics.GenericAPIView):
+class RegisterNewPatient(generics.GenericAPIView):
 
     serializer_class = PatientInformationSerializer
-    queryset = PatientInformation.objects.all()
 
     @swagger_auto_schema(operation_summary='Save patient information')
     def post(self, request):
 
         patient = request.data
 
+        print(patient)
+
         serializer = self.serializer_class(data=patient)
 
         if serializer.is_valid(raise_exception=True):
 
+            serializer.save()
             response = {
                 'success-status': True, 
                 'patient-information': serializer.data
             }
 
-        return Response(data=response, status=status.HTTP_200_OK)
+            return Response(data=response, status=status.HTTP_200_OK)
+        print(serializer.errors)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    @swagger_auto_schema(operation_summary='Get patient information')
+
+class PatientsDataView(generics.GenericAPIView):
+    
+    serializer_class = PatientInformationSerializer
+    queryset = PatientInformation.objects.all()
+
+    @swagger_auto_schema(operation_summary='List all patient information')
     def get(self, request):
         
         all_patients = PatientInformation.objects.all()
@@ -71,6 +81,11 @@ class PatientInformationView(generics.GenericAPIView):
                 'patients': serializer.data
             }
         return Response(data=response, status=status.HTTP_200_OK)
+        
+class PatientInformationView(generics.GenericAPIView):
+
+    serializer_class = PatientInformationSerializer
+
     
     @swagger_auto_schema(operation_summary='Get patient data by ID')
     def get(self, request, patient_id):

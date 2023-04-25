@@ -21,6 +21,7 @@ class PatientInformation(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     date_of_birth = models.DateField(blank=True, null=True)
+    gender = models.CharField(max_length=10, null=True)
     registered_on = models.DateField(default=timezone.now)
 
     def __str__(self):

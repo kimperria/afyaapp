@@ -16,27 +16,27 @@ def helloAfya(request):
     return HttpResponse('This is the initial DRF test')
 
 
-class LoginAPIView(generics.GenericAPIView):
+# class LoginAPIView(generics.GenericAPIView):
 
-    serializer_class = LoginSerializer
+#     serializer_class = LoginSerializer
 
 
-    @swagger_auto_schema(operation_summary='Authenticated user')
-    def post(self, request):
+#     @swagger_auto_schema(operation_summary='Authenticated user')
+#     def post(self, request):
 
-        user = request.data
+#         user = request.data
 
-        serializer = self.serializer_class(data=user)
+#         serializer = self.serializer_class(data=user)
 
-        if serializer.is_valid(raise_exception=True):
+#         if serializer.is_valid(raise_exception=True):
 
-            response = {
-                'information': 'Login success',
-                'authenticatied': True,
-                'user': serializer.data
-            }
+#             response = {
+#                 'information': 'Login success',
+#                 'authenticatied': True,
+#                 'user': serializer.data
+#             }
 
-            return Response(data=response, status=status.HTTP_200_OK)
+#             return Response(data=response, status=status.HTTP_200_OK)
         
 class RegisterNewPatient(generics.GenericAPIView):
 
@@ -47,13 +47,17 @@ class RegisterNewPatient(generics.GenericAPIView):
 
         patient = request.data
 
+        medic = request.user
+
+        print(medic)
+
         print(patient)
 
         serializer = self.serializer_class(data=patient)
 
         if serializer.is_valid(raise_exception=True):
 
-            serializer.save()
+            serializer.save(created_by=medic)
             response = {
                 'success-status': True, 
                 'patient-information': serializer.data
@@ -116,6 +120,10 @@ class PatientInformationView(generics.GenericAPIView):
         
         updated_information = request.data
 
+        medic = request.user
+
+        print(medic)
+
         patient_information = get_object_or_404(PatientInformation, pk=patient_id)
 
         serializer = self.serializer_class(data=updated_information, instance=patient_information)
@@ -139,16 +147,28 @@ class AppointmentInformationView(generics.GenericAPIView):
 
         appointment = request.data
 
+        medic = request.user
+        print('Medic', medic, type(medic))
+
+        print('Appointment', appointment)
+        patient_id =appointment['patient']
+
+        patient = PatientInformation.objects.get(id=int(patient_id))
+
+        print('Patient', patient, patient.id)
+
         serializer = self.serializer_class(data=appointment)
 
         if serializer.is_valid(raise_exception=True):
 
+            serializer.save(patient=patient.id, created_by=medic)
             response = {
                 'success-status': True,
                 'appointment-status': serializer.data
             }
 
             return Response(data=response, status=status.HTTP_200_OK)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
     @swagger_auto_schema(operation_summary='List all appountments')

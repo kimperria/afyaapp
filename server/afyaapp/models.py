@@ -23,6 +23,7 @@ class PatientInformation(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=10, null=True)
     registered_on = models.DateField(default=timezone.now)
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT)
 
     def __str__(self):
         return f'Fullname: {self.first_name} ' + self.last_name
@@ -32,6 +33,7 @@ class AppointmentDetails(models.Model):
     height = models.IntegerField()
     weight = models.IntegerField()
     body_mass_index = models.IntegerField()
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.patient.first_name
@@ -59,9 +61,10 @@ class PatientRecord(models.Model):
     )
 
     general_health = models.IntegerField(choices=PATIENT_CHOICE, default=UNDEFINED)
-    is_onDiet = models.IntegerField(choices=PATIENT_ANSWER, default=PATIENT_ANSWER, null=True, blank=True)
-    is_onDrugs = models.IntegerField(choices=PATIENT_ANSWER, default=PATIENT_ANSWER, null=True, blank=True)
+    is_onDiet = models.IntegerField(choices=PATIENT_ANSWER, default=DOUBTFUL)
+    is_onDrugs = models.IntegerField(choices=PATIENT_ANSWER, default=DOUBTFUL)
     patient = models.ForeignKey(PatientInformation, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.general_health

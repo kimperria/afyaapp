@@ -40,11 +40,10 @@ class PatientInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientInformation
 
-        fields = ('first_name', 'last_name', 'date_of_birth', 'gender')
+        fields = '__all__'
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    patient = serializers.CharField()
     height = serializers.IntegerField()
     weight = serializers.IntegerField()
     body_mass_index = serializers.IntegerField()
@@ -52,4 +51,18 @@ class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppointmentDetails
 
-        fields = ('patient', 'height', 'weight', 'body_mass_index')
+        fields = '__all__'
+
+
+class CreatePatientAppointmentSerializer(serializers.ModelSerializer):
+    patient_id = serializers.IntegerField()
+    height = serializers.IntegerField()
+    weight = serializers.IntegerField()
+    body_mass_index = serializers.IntegerField()
+
+    class Meta:
+        model = AppointmentDetails
+
+        fields = ('patient_id', 'height', 'weight', 'body_mass_index')
+
+        depth = 1

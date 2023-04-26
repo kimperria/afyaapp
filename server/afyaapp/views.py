@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 
 from .models import Profile, PatientInformation, AppointmentDetails
-from .serializers import LoginSerializer, PatientInformationSerializer, AppointmentSerializer
+from .serializers import CreatePatientAppointmentSerializer, PatientInformationSerializer, AppointmentSerializer
 
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -142,34 +143,6 @@ class AppointmentInformationView(generics.GenericAPIView):
     serializer_class = AppointmentSerializer
     queryset = AppointmentDetails.objects.all()
 
-    @swagger_auto_schema(operation_summary='Save appointment detail')
-    def post(self, request):
-
-        appointment = request.data
-
-        medic = request.user
-        print('Medic', medic, type(medic))
-
-        print('Appointment', appointment)
-        patient_id =appointment['patient']
-
-        patient = PatientInformation.objects.get(id=int(patient_id))
-
-        print('Patient', patient, patient.id)
-
-        serializer = self.serializer_class(data=appointment)
-
-        if serializer.is_valid(raise_exception=True):
-
-            serializer.save(patient=patient.id, created_by=medic)
-            response = {
-                'success-status': True,
-                'appointment-status': serializer.data
-            }
-
-            return Response(data=response, status=status.HTTP_200_OK)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
     @swagger_auto_schema(operation_summary='List all appountments')
     def get(self, request):
@@ -183,6 +156,49 @@ class AppointmentInformationView(generics.GenericAPIView):
                 'appointments': serializer.data
             }
         return Response(data=response, status=status.HTTP_200_OK)
+    
+
+class CreatePatientAppointment(generics.GenericAPIView):
+
+    serializer_class = CreatePatientAppointmentSerializer
+
+    ## Overwrite create method
+    def create(self, request, *args, **kwargs):
+
+        appointment_data = request.data
+
+        new_appointment = AppointmentDetails.objects.create(patient=PatientInformation.objects.get(first_name=appointment_data['patient_id']), 
+                                                            height=appointment_data['height'],
+                                                            weight=appointment_data['weight'],
+                                                            body_mass_index=appointment_data['body_mass_index'],
+                                                            created_by=request.user)
+        new_appointment.save()
+
+        serializer = CreatePatientAppointmentSerializer(new_appointment)
+
+        return Response(serializer.data)
+
+
+    @swagger_auto_schema(operation_summary='Create appointment detail')
+    def post(self, request):
+
+        appointment = request.data
+
+        medic = request.user
+
+        serializer = self.serializer_class(data=appointment)
+
+        if serializer.is_valid(raise_exception=True):
+
+            serializer.save(created_by=medic)
+            response = {
+                'success-status': True,
+                'appointment-status': serializer.data
+            }
+
+            return Response(data=response, status=status.HTTP_200_OK)
+
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PatientAppointmentView(generics.GenericAPIView):
     serializer_class = AppointmentSerializer

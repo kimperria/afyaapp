@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 
 from .models import Profile, PatientInformation, AppointmentDetails
-from .serializers import CreatePatientAppointmentSerializer, PatientInformationSerializer, AppointmentSerializer
+from .serializers import CreatePatientAppointmentSerializer, PatientInformationSerializer, AppointmentSerializer, CreatePatientInformationSerializer
 
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -41,7 +41,7 @@ def helloAfya(request):
         
 class RegisterNewPatient(generics.GenericAPIView):
 
-    serializer_class = PatientInformationSerializer
+    serializer_class = CreatePatientInformationSerializer
 
     @swagger_auto_schema(operation_summary='Save patient information')
     def post(self, request):
@@ -49,10 +49,6 @@ class RegisterNewPatient(generics.GenericAPIView):
         patient = request.data
 
         medic = request.user
-
-        print(medic)
-
-        print(patient)
 
         serializer = self.serializer_class(data=patient)
 

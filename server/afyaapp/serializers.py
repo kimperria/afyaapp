@@ -42,6 +42,17 @@ class PatientInformationSerializer(serializers.ModelSerializer):
 
         fields = '__all__'
 
+class CreatePatientInformationSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    date_of_birth = serializers.DateField()
+    gender = serializers.CharField()
+
+    class Meta:
+        model = PatientInformation
+
+        fields = ['first_name', 'last_name', 'date_of_birth', 'gender']
+
 
 class AppointmentSerializer(serializers.ModelSerializer):
     height = serializers.IntegerField()
@@ -55,6 +66,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 
 class CreatePatientAppointmentSerializer(serializers.ModelSerializer):
+    created_on = serializers.DateField()
     patient_id = serializers.IntegerField()
     height = serializers.IntegerField()
     weight = serializers.IntegerField()
@@ -63,6 +75,6 @@ class CreatePatientAppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppointmentDetails
 
-        fields = ('patient_id', 'height', 'weight', 'body_mass_index')
+        fields = ('created_on','patient_id', 'height', 'weight', 'body_mass_index')
 
         depth = 1

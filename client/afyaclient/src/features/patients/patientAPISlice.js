@@ -11,8 +11,18 @@ export const registerNewPatientSlice = newPatientSlice.injectEndpoints({
                     'Content-Type': 'application/json'
                 }
             })
+        }),
+        postAppointmentDetail: builder.mutation({
+            query: ( patientId,  appointmentInformation) => ({
+                url: `/api/appointment/${patientId}`,
+                method: 'POST',
+                body: appointmentInformation,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
         })
     })
 });
 
-export const { useRegisterNewPatientMutation } = registerNewPatientSlice;
+export const { useRegisterNewPatientMutation, usePostAppointmentDetailMutation } = registerNewPatientSlice;

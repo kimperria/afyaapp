@@ -11,9 +11,9 @@ import { useRegisterNewPatientMutation } from "../features/patients/patientAPISl
 function RegisterPatient() {
 
   const [patientInfo, { isLoading }] = useRegisterNewPatientMutation();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState({});
+  const [first_name, setFirstName] = useState('');
+  const [last_name, setLastName] = useState('');
+  const [date_of_birth, setDateOfBirth] = useState({});
   const [gender, setGender] = useState(false);
   const patientRef = useRef();
 
@@ -37,7 +37,7 @@ function RegisterPatient() {
   const submitPatientInformation = async (e) => {
     e.preventDefault()
 
-    const newPatientData = await patientInfo({firstName, lastName, dateOfBirth, gender}).unwrap();
+    const newPatientData = await patientInfo({first_name, last_name, date_of_birth, gender}).unwrap();
     console.log(newPatientData)
   };
 
@@ -52,12 +52,12 @@ function RegisterPatient() {
           <Form onSubmit={submitPatientInformation}>
             <Form.Group className="mb-3" controlId="formBasicFirstName">
               <Form.Label>First Name</Form.Label>
-              <Form.Control type="text" placeholder="First name" value={firstName} onChange={handleFirstNameInput} ref={patientRef} />
+              <Form.Control type="text" placeholder="First name" value={first_name} onChange={handleFirstNameInput} ref={patientRef} />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicLastName">
               <Form.Label>Last Name</Form.Label>
-              <Form.Control type="text" placeholder="last name" value={lastName} onChange={handleLastNameInput} ref={patientRef} />
+              <Form.Control type="text" placeholder="last name" value={last_name} onChange={handleLastNameInput} ref={patientRef} />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicDOB">

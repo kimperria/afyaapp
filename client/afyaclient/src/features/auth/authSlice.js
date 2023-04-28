@@ -1,11 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 
+import Cookie from 'js-cookie';
+
+const token = Cookie.get('token')
+const accessToken = token ? JSON.parse(token) : {} 
+// console.log(token)
+
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
-        accessToken:null,
-        refreshToken:null
+        accessToken:accessToken.access,
+        refreshToken: accessToken.refresh
     },
     reducers: {
         // action creators

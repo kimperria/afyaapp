@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
 import { useLoginMutation } from "../../features/auth/loginAPISlice";
+import Cookie from 'js-cookie';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAccessToken } from "../../features/auth/authSlice";
 
@@ -29,6 +30,7 @@ function Login() {
     try{
       const userData = await login({username, password}).unwrap();
       console.log(userData)
+      Cookie.set('token', JSON.stringify(userData))
     }catch(error){
       console.log(error)
     }

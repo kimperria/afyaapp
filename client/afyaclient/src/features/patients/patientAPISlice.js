@@ -1,6 +1,6 @@
-import { newPatientSlice } from "../../app/api/patientEndPoints";
+import { apiSlice } from "../../app/api/apiSlice";
 
-export const registerNewPatientSlice = newPatientSlice.injectEndpoints({
+export const registerNewPatientSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         registerNewPatient: builder.mutation({
             query: patientInformation => ({

@@ -34,6 +34,13 @@ function RegisterPatient() {
     setGender(gender)
   }
 
+  const clearForm = () => {
+    setFirstName(''),
+    setLastName(''),
+    setDateOfBirth({}),
+    setGender('')
+  };
+
   const submitPatientInformation = async (e) => {
     e.preventDefault()
 
@@ -49,7 +56,7 @@ function RegisterPatient() {
           <h3 className="text-center">Patient Registration Page</h3>
         </Alert>
         <div className="mx-auto col-10 col-md-8 col-lg-6">
-          <Form onSubmit={submitPatientInformation}>
+          <Form>
             <Form.Group className="mb-3" controlId="formBasicFirstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control type="text" placeholder="First name" value={first_name} onChange={handleFirstNameInput} ref={patientRef} />
@@ -67,7 +74,7 @@ function RegisterPatient() {
 
             <Form.Group className="mb-3" controlId="formBasicGender">
               <Form.Select aria-label="Default select example" onChange={handleGenderInput} ref={patientRef}>
-                <option value=''>Please select your gender</option>
+                <option value="">Please select your gender</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Non-Binary</option>
@@ -76,13 +83,13 @@ function RegisterPatient() {
 
             <section className="row">
               <div className="col">
-                <Button variant="danger" type="submit" style={{ width: "100%" }}>
+                <Button variant="danger" type="submit" style={{ width: "100%" }} onClick={clearForm}>
                   Clear
                 </Button>
               </div>
 
               <div className="col">
-                <Button variant="success" type="submit" style={{ width: "100%" }}>
+                <Button variant="success" type="submit" onClick={submitPatientInformation} style={{ width: "100%" }}>
                   Save
                 </Button>
               </div>

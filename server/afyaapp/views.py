@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404
-from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.http import HttpResponse
 
 from .models import Profile, PatientInformation, AppointmentDetails
@@ -85,6 +85,7 @@ class PatientsDataView(generics.GenericAPIView):
 class PatientInformationView(generics.GenericAPIView):
 
     serializer_class = PatientInformationSerializer
+    permission_classes = [IsAuthenticated]
 
     
     @swagger_auto_schema(operation_summary='Get patient data by ID')
@@ -116,32 +117,31 @@ class PatientInformationView(generics.GenericAPIView):
         
         updated_information = request.data
 
-        print('Updated Info:', updated_information)
-
         medic = request.user
 
         try: 
             patient_information = PatientInformation.objects.get(pk=patient_id)
+
+            serializer = self.serializer_class(data=updated_information, instance=patient_information)
+
+
+            if serializer.is_valid():
+                serializer.save(created_by=medic)
+                response = {
+                    'success': True,
+                    'message': 'Infomation updated successfully',
+                    'data': serializer.data
+                }
+                return Response(data=response, status=status.HTTP_201_CREATED)
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PatientInformation.DoesNotExist:
-            return Response(data='Patient not found', status=status.HTTP_404_NOT_FOUND)
-
-        patient_information = get_object_or_404(PatientInformation, pk=patient_id)
-
-        print('Patient information:',patient_information)
-
-        serializer = self.serializer_class(data=updated_information, instance=patient_information)
-
-        print('serializer',serializer)
-
-        if serializer.is_valid():
-            # updated_first_name = 
-            serializer.save(created_by=medic)
             response = {
-                'infomation': 'Infomation updated successfully',
-                'data': serializer.data
+                'success': False,
+                'data': {
+                    'message': 'Failed to update patient information'
+                }
             }
-            return Response(data=response, status=status.HTTP_201_CREATED)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=response, status=status.HTTP_404_NOT_FOUND)
 
 class AppointmentInformationView(generics.GenericAPIView):
 

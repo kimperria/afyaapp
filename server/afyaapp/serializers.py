@@ -41,7 +41,7 @@ class PatientInformationSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField()
     date_of_birth = serializers.DateField()
     gender = serializers.CharField()
-    created_by = UserSerializer()
+    created_by = UserSerializer(read_only=True)
 
     class Meta:
         model = PatientInformation

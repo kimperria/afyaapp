@@ -167,44 +167,58 @@ class AppointmentInformationView(generics.GenericAPIView):
 class CreatePatientAppointment(generics.GenericAPIView):
 
     serializer_class = CreatePatientAppointmentSerializer
+    permission_classes = [IsAuthenticated]
 
     ## Overwrite create method
-    def create(self, request, *args, **kwargs):
+    # def create(self, request, *args, **kwargs):
 
-        appointment_data = request.data
+    #     appointment_data = request.data
 
-        new_appointment = AppointmentDetails.objects.create(patient=PatientInformation.objects.get(first_name=appointment_data['patient_id']), 
-                                                            height=appointment_data['height'],
-                                                            weight=appointment_data['weight'],
-                                                            body_mass_index=appointment_data['body_mass_index'],
-                                                            created_by=request.user)
-        new_appointment.save()
+    #     new_appointment = AppointmentDetails.objects.create(patient=PatientInformation.objects.get(pk=appointment_data['patient_id']), 
+    #                                                         height=appointment_data['height'],
+    #                                                         weight=appointment_data['weight'],
+    #                                                         body_mass_index=appointment_data['body_mass_index'],
+    #                                                         created_by=request.user)
+    #     new_appointment.save()
 
-        serializer = CreatePatientAppointmentSerializer(new_appointment)
+    #     serializer = CreatePatientAppointmentSerializer(new_appointment)
 
-        return Response(serializer.data)
+    #     return Response(serializer.data)
 
 
-    @swagger_auto_schema(operation_summary='Create appointment detail')
-    def post(self, request):
+    @swagger_auto_schema(operation_summary='Create patient appointment')
+    def post(self, request, patient_id):
 
         appointment = request.data
 
         medic = request.user
 
-        serializer = self.serializer_class(data=appointment)
+        try: 
+            patient = PatientInformation.objects.get(pk=patient_id)
+            serializer = self.serializer_class(data=appointment)
 
-        if serializer.is_valid(raise_exception=True):
+            if serializer.is_valid(raise_exception=True):
 
-            serializer.save(created_by=medic)
+                serializer.save(patient=patient, created_by=medic)
+                response = {
+                    'success-status': True,
+                    'appointment-status': serializer.data
+                }
+
+                return Response(data=response, status=status.HTTP_200_OK)
+
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except PatientInformation.DoesNotExist:
             response = {
-                'success-status': True,
-                'appointment-status': serializer.data
+                "success": False,
+                "data": {
+                    'error': 'Patient not found',
+                    'message': 'No patient matches the provided ID'
+                }
             }
 
-            return Response(data=response, status=status.HTTP_200_OK)
-
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=response, status=status.HTTP_404_NOT_FOUND)
+        
 
 class PatientAppointmentView(generics.GenericAPIView):
     serializer_class = AppointmentSerializer

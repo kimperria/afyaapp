@@ -96,16 +96,16 @@ class PatientInformationView(generics.GenericAPIView):
 
             response = {
                 'success': True,
-                'patient-information': serializer.data
+                'data': serializer.data
             }
 
             return Response(data=response, status=status.HTTP_200_OK)
         except PatientInformation.DoesNotExist:
             response = {
                 'success': False,
-                'message': {
+                'data': {
                     'error': 'Patient not found',
-                    'data': 'No patient matches the provided ID'
+                    'message': 'No patient matches the provided ID'
                 }
             }
 

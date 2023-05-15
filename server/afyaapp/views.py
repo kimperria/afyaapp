@@ -56,8 +56,8 @@ class RegisterNewPatient(generics.GenericAPIView):
 
             serializer.save(created_by=medic)
             response = {
-                'success-status': True, 
-                'patient-information': serializer.data
+                'success': True, 
+                'data': serializer.data
             }
 
             return Response(data=response, status=status.HTTP_200_OK)
@@ -117,16 +117,26 @@ class PatientInformationView(generics.GenericAPIView):
         
         updated_information = request.data
 
+        print('Updated Info:', updated_information)
+
         medic = request.user
 
-        print(medic)
+        try: 
+            patient_information = PatientInformation.objects.get(pk=patient_id)
+        except PatientInformation.DoesNotExist:
+            return Response(data='Patient not found', status=status.HTTP_404_NOT_FOUND)
 
         patient_information = get_object_or_404(PatientInformation, pk=patient_id)
 
+        print('Patient information:',patient_information)
+
         serializer = self.serializer_class(data=updated_information, instance=patient_information)
 
+        print('serializer',serializer)
+
         if serializer.is_valid():
-            serializer.save()
+            # updated_first_name = 
+            serializer.save(created_by=medic)
             response = {
                 'infomation': 'Infomation updated successfully',
                 'data': serializer.data

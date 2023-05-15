@@ -28,6 +28,11 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Disabled account, please contact admin')
         
         return validated_data
+    
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
 
     
     
@@ -36,11 +41,13 @@ class PatientInformationSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField()
     date_of_birth = serializers.DateField()
     gender = serializers.CharField()
+    created_by = UserSerializer()
 
     class Meta:
         model = PatientInformation
 
-        fields = '__all__'
+        fields = ['id', 'first_name', 'last_name', 'date_of_birth', 'gender', 'registered_on', 'created_by']
+        depth = 1
 
 class CreatePatientInformationSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField()
@@ -66,7 +73,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 
 class CreatePatientAppointmentSerializer(serializers.ModelSerializer):
-    created_on = serializers.DateField()
+    appointment_date = serializers.DateField()
     patient_id = serializers.IntegerField()
     height = serializers.IntegerField()
     weight = serializers.IntegerField()
@@ -75,6 +82,6 @@ class CreatePatientAppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppointmentDetails
 
-        fields = ('created_on','patient_id', 'height', 'weight', 'body_mass_index')
+        fields = ('appointment_date','patient_id', 'height', 'weight', 'body_mass_index')
 
         depth = 1

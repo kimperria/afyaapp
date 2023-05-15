@@ -61,7 +61,6 @@ class RegisterNewPatient(generics.GenericAPIView):
             }
 
             return Response(data=response, status=status.HTTP_200_OK)
-        print(serializer.errors)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -78,8 +77,8 @@ class PatientsDataView(generics.GenericAPIView):
         serializer = self.serializer_class(instance=all_patients, many=True)
 
         response = {
-                'success-status': True,
-                'patients': serializer.data
+                'success': True,
+                'data': serializer.data
             }
         return Response(data=response, status=status.HTTP_200_OK)
         

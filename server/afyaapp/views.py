@@ -146,6 +146,7 @@ class PatientInformationView(generics.GenericAPIView):
 class AppointmentInformationView(generics.GenericAPIView):
 
     serializer_class = AppointmentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = AppointmentDetails.objects.all()
 
 
@@ -157,8 +158,8 @@ class AppointmentInformationView(generics.GenericAPIView):
         serializer = self.serializer_class(instance=all_appointments, many=True)
 
         response = {
-                'success-status': True,
-                'appointments': serializer.data
+                'success': True,
+                'data': serializer.data
             }
         return Response(data=response, status=status.HTTP_200_OK)
     

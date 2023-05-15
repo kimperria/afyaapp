@@ -222,6 +222,7 @@ class CreatePatientAppointment(generics.GenericAPIView):
 
 class PatientAppointmentView(generics.GenericAPIView):
     serializer_class = AppointmentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = AppointmentDetails.objects.all()
 
     @swagger_auto_schema(operation_summary='Get appointment data by ID')
@@ -233,7 +234,7 @@ class PatientAppointmentView(generics.GenericAPIView):
 
             response = {
                 'success': True,
-                'appointment-information': serializer.data
+                'data': serializer.data
             }
 
             return Response(data=response, status=status.HTTP_200_OK)
@@ -253,15 +254,28 @@ class PatientAppointmentView(generics.GenericAPIView):
         
         updated_appointment = request.data
 
-        appointment_information = get_object_or_404(PatientInformation, pk=appointment_id)
+        try: 
+            appointment = AppointmentDetails.objects.get(pk=appointment_id)
+            print(appointment)
 
-        serializer = self.serializer_class(data=updated_appointment, instance=appointment_information)
+            serializer = self.serializer_class(data=updated_appointment, instance=appointment)
 
-        if serializer.is_valid():
-            serializer.save()
+            if serializer.is_valid():
+                serializer.save()
+                response = {
+                    'success': True,
+                    'message': 'Appointment updated successfully',
+                    'data': serializer.data
+                }
+                return Response(data=response, status=status.HTTP_201_CREATED)
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except AppointmentDetails.DoesNotExist:
             response = {
-                'infomation': 'Infomation updated successfully',
-                'data': serializer.data
+                'success': False,
+                'data': {
+                    'error': 'Appointment not found',
+                    'message': 'No appointment matches the provided ID'
+                }
             }
-            return Response(data=response, status=status.HTTP_201_CREATED)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(data=response, status=status.HTTP_404_NOT_FOUND)

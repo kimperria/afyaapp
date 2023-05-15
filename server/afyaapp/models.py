@@ -33,7 +33,7 @@ class AppointmentDetails(models.Model):
     height = models.IntegerField()
     weight = models.IntegerField()
     body_mass_index = models.IntegerField()
-    created_on = models.DateField()
+    appointment_date = models.DateField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
 
     def __str__(self):

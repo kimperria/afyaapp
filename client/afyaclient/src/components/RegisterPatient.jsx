@@ -45,7 +45,7 @@ function RegisterPatient() {
     e.preventDefault()
 
     const newPatientData = await patientInfo({first_name, last_name, date_of_birth, gender}).unwrap();
-    console.log(newPatientData)
+    // console.log(newPatientData)
   };
 
   return (

@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import Table from 'react-bootstrap/Table';
 import Form from "react-bootstrap/Form";
 import NavBar from '../components/NavBar';
+import { useViewAllPatientsQuery } from '../features/patients/patientAPISlice';
 
 function PatientReports() {
+
+    const { data, isLoading, error} = useViewAllPatientsQuery();
+
+    useEffect(()=>{
+        console.log(data, isLoading, error)
+    },[])
+
+    if(isLoading) return <div>Is loading</div>;
+
+    if(error) return <div>Error</div>;
+
     return (
         <main className="container container-fluid">
             <NavBar />

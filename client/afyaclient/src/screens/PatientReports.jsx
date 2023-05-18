@@ -4,6 +4,7 @@ import Alert from "react-bootstrap/Alert";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import NavBar from "../components/NavBar";
+import { Link } from "react-router-dom";
 import { useViewAllPatientsQuery } from "../features/patients/patientAPISlice";
 
 function PatientReports() {
@@ -132,7 +133,7 @@ function PatientReports() {
                     <td>{patient.age}</td>
                     <td>{ bmiState(patient.bmi)}</td>
                     <td>
-                      <Button variant="secondary" style={{ width: "100%" }}>View</Button>
+                      <Button variant="success" style={{ width: "100%" }} href={`/patient/${patient.id}`}>View</Button>
                     </td>
                   </tr>
                 ))}

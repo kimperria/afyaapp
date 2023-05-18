@@ -97,10 +97,6 @@ function RegisterPatient() {
           </Form>
         </div>
       </section>
-
-      <section>
-        <VitalSection />
-      </section>
     </main>
   );
 }

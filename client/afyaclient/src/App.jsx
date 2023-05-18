@@ -1,5 +1,6 @@
 import {
   BrowserRouter as Router,
+  Navigate,
   Routes,
   Route,
   BrowserRouter,
@@ -8,6 +9,7 @@ import Login from "./screens/auth/Login";
 import RegisterPatient from "./components/RegisterPatient";
 import Dashboard from "./screens/Dashboard";
 import PatientReports from "./screens/PatientReports";
+import PatientInformation from "./screens/PatientInformation";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route path='/register-patient' element={<RegisterPatient />} />
         <Route path="/dashboard" element={<Dashboard />}/>
         <Route path='/reports' element={<PatientReports />} />
+        <Route path="/patient/:id" element={<PatientInformation />}/>
+        <Route path='*' element={<Navigate to='/' />}/> 
       </Routes>
     </BrowserRouter>
   );

@@ -7,23 +7,74 @@ import NavBar from "../components/NavBar";
 import { useViewAllPatientsQuery } from "../features/patients/patientAPISlice";
 
 function PatientReports() {
-  const { data, isLoading, isFetching, error } = useViewAllPatientsQuery({
-    pollingInterval: 3000,
-    refetchOnMountOrArgChange: true,
-    skip: false,
-  });
+  // const { data, isLoading, isFetching, error } = useViewAllPatientsQuery({
+  //   pollingInterval: 3000,
+  //   refetchOnMountOrArgChange: true,
+  //   skip: false,
+  // });
 
-  const [patientList, setPatientList] = useState([])
+  const patientList = [
+    {
+      id: 1,
+      first_name: 'Kimani',
+      last_name: 'John',
+      age: 25,
+      bmi: 20
+    },
+    {
+      id: 2,
+      first_name: 'Terry',
+      last_name: 'Njoki',
+      age: 21,
+      bmi: 18
+    },
+    {
+      id: 3,
+      first_name: 'Joy',
+      last_name: 'Wairimu',
+      age: 23,
+      bmi: 28
+    },
+    {
+      id: 4,
+      first_name: 'Michael',
+      last_name: 'Owiso',
+      age: 16,
+      bmi: 16
+    },
+    {
+      id: 5,
+      first_name: 'Nyevu',
+      last_name: 'Karisa',
+      age: 30,
+      bmi: 30
+    },
+  ]
 
-  if (data?.status == 200) {
-     useEffect(() => {
-      const patientList = data.data.data
-      setPatientList(patientList)
-     }, [])
-  } else {
+  const bmiState = (patientWeight) => {
+    if( patientWeight < 18.5) return 'Underweight';
+    if( patientWeight > 18.5 && patientWeight < 25) return 'Normal';
+    if( patientWeight > 25 || patientWeight == 25) return 'Overweight';
+  };
 
-    console.log('Unable to fetch endpoint')
-  }
+  // const [patientList, setPatientList] = useState();
+
+
+
+  // try {
+  //   if (data?.status == 200) {
+  //     useEffect(() => {
+  //       console.log(data)
+  //       const patientList = data.data.data
+  //       setPatientList(patientList)
+  //     }, [])
+  //   } else if (error) {
+
+  //     console.error(error, 'Unable to fetch endpoint')
+  //   }
+  // } catch (e) {
+  //   console.log(e)
+  // }
 
   // const patientAge = (date_of_birth) => {
   //   const today = new Date();
@@ -70,41 +121,23 @@ function PatientReports() {
           </thead>
           <tbody>
             {/* {isFetching ? 'Fetching list' : ''} */}
-            {patientList.map((patient) => (
-              <tr key={patient.id}>
-                <td>{patient.first_name + ' ' + patient.last_name}</td>
-                <td>{patient.date_of_birth}</td>
-                <td>Overweight</td>
-                <td>
-                  <Button variant="secondary" style={{ width: "100%" }}>View</Button>
-                </td>
-              </tr>
-            ))}
-            {/* <tr>
-              <td>Mark</td>
-              <td>24</td>
-              <td>Overweight</td>
-              <td>
-                <Button variant="secondary" style={{ width: "100%" }}>View</Button>
-              </td>
-            </tr> */}
-            {/* <tr>
-              <td>Jacob</td>
-              <td>65</td>
-              <td>Normal</td>
-              <td>
-                <Button variant="secondary" style={{width: "100%"}}>View</Button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Terry</td>
-              <td>36</td>
-              <td>Underweight</td>
-              <td>
-                <Button variant="secondary" style={{width: "100%"}}>View</Button>
-              </td>
-            </tr> */}
+            {patientList.length === 0 ? 
+              <tr>
+                <td colSpan={4}><h4 className="text-center">Unable to populate patient's data</h4></td>
+              </tr> :
+              <>
+                {patientList.map((patient) => (
+                  <tr key={patient.id}>
+                    <td>{patient.first_name + ' ' + patient.last_name}</td>
+                    <td>{patient.age}</td>
+                    <td>{ bmiState(patient.bmi)}</td>
+                    <td>
+                      <Button variant="secondary" style={{ width: "100%" }}>View</Button>
+                    </td>
+                  </tr>
+                ))}
+              </>
+            }
           </tbody>
         </Table>
       </section>

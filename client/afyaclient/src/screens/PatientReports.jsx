@@ -19,35 +19,35 @@ function PatientReports() {
       id: 1,
       first_name: 'Kimani',
       last_name: 'John',
-      age: 25,
+      date_of_birth: "1947-04-26",
       bmi: 20
     },
     {
       id: 2,
       first_name: 'Terry',
       last_name: 'Njoki',
-      age: 21,
+      date_of_birth: "1987-04-26",
       bmi: 18
     },
     {
       id: 3,
       first_name: 'Joy',
       last_name: 'Wairimu',
-      age: 23,
+      date_of_birth: "1964-04-26",
       bmi: 28
     },
     {
       id: 4,
       first_name: 'Michael',
       last_name: 'Owiso',
-      age: 16,
+      date_of_birth: "2000-04-26",
       bmi: 16
     },
     {
       id: 5,
       first_name: 'Nyevu',
       last_name: 'Karisa',
-      age: 30,
+      date_of_birth: "1997-04-26",
       bmi: 30
     },
   ]
@@ -57,6 +57,21 @@ function PatientReports() {
     if( patientWeight > 18.5 && patientWeight < 25) return 'Normal';
     if( patientWeight > 25 || patientWeight == 25) return 'Overweight';
   };
+
+  const patientAge = (date_of_birth) => {
+    const today = new Date();
+    const age = today.getFullYear() - date_of_birth.getFullYear() - 
+    (today.getMonth() < date_of_birth.getMonth() || 
+    (today.getMonth() === date_of_birth.getMonth() && today.getDate() < date_of_birth.getDate()));
+    return age;
+  }
+
+  const convertPatientDOB = (api_date) => {
+    const patient_DOB = new Date(api_date)
+    return patient_DOB
+  }
+  patientAge(convertPatientDOB("1997-04-26"))
+
 
   // const [patientList, setPatientList] = useState();
 
@@ -130,7 +145,7 @@ function PatientReports() {
                 {patientList.map((patient) => (
                   <tr key={patient.id}>
                     <td>{patient.first_name + ' ' + patient.last_name}</td>
-                    <td>{patient.age}</td>
+                    <td>{ patientAge(convertPatientDOB(patient.date_of_birth))}</td>
                     <td>{ bmiState(patient.bmi)}</td>
                     <td>
                       <Button variant="success" style={{ width: "100%" }} href={`/patient/${patient.id}`}>View</Button>

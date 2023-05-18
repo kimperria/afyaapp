@@ -32,7 +32,7 @@ export const registerNewPatientSlice = apiSlice.injectEndpoints({
 
                 const data = await response;
 
-                return { status, data};
+                return { status, data };
             }
         })
     })

@@ -3,17 +3,21 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import InputGroup from 'react-bootstrap/InputGroup';
+import moment from 'moment';
 
 import { usePostAppointmentDetailMutation } from '../features/patients/patientAPISlice';
 
 function VitalSection() {
 
     const [ appointmentDetails, {isLoading} ] = usePostAppointmentDetailMutation();
-    const [ appointmentDate, setAppointmentDate ] = useState({})
-    const [ patientWeight, setPatientWeight ] = useState(0)
-    const [ patientHeight, setPatientHeight ] = useState(0)
-    const [ bmi, setBmi ] = useState(0)
+    const [ appointmentDate, setAppointmentDate ] = useState(new Date());
+    const [ patientWeight, setPatientWeight ] = useState(0);
+    const [ patientHeight, setPatientHeight ] = useState(0);
+    const [ bmi , setBmi ] = useState(``)
     const patientApppointmentRef = useRef();
+
+    // Server date format with moment
+    const todaysDate = moment(appointmentDate).format('YYYY/MM/DD')
 
     const handleAppointmentDateInput = (e) => {
         setAppointmentDate(e.target.value)
@@ -27,30 +31,26 @@ function VitalSection() {
         setPatientHeight(e.target.value)
     };
 
+
     const handlePatientBMIInput = (patientWeight, patientHeight) => {
-        let newBMI = patientWeight / (patientHeight * patientHeight)
-
-        // console.log('BMI', newBMI)
-
-        // if (newBMI = NaN || newBMI === Infinity ) {
-        //    var placeHolderValue = 'Please enter your weight and height'
-        // } else {
-        //    var  placeHolderValue = 'Patient BMI'
-        // }
-        setBmi(newBMI)
-
-    }
+        let newBMI = patientWeight / (patientHeight * patientHeight);
+        setBmi(newBMI);
+    };
 
     useEffect(() => {
-        handlePatientBMIInput(patientWeight, patientHeight)
-    }, [handlePatientBMIInput])
+        if( patientWeight != null && patientHeight !=null){
+            handlePatientBMIInput(patientWeight, patientHeight)
+        }
+    }, [patientWeight, patientHeight])
+
+
 
     
 
     const submitAppointmentData = async (e) => {
         e.preventDefault()
 
-        const appointmentInfo = await appointmentDetails({appointmentDate, patientWeight, patientHeight, bmi }).unwrap();
+        const appointmentInfo = await appointmentDetails({patientWeight, patientHeight, bmi }).unwrap();
 
         console.log(appointmentInfo)
     };
@@ -62,11 +62,13 @@ function VitalSection() {
             </Alert>
             <Form onSubmit={submitAppointmentData}>
                 <Form.Group className="mb-3" controlId="formBasicFirstName">
-                    <Form.Label>Please provide today's date</Form.Label>
+                    <Form.Label>Today's date</Form.Label>
                     <Form.Control
-                        type="date"
+                        type="text"
+                        value={todaysDate}
                         onChange={handleAppointmentDateInput}
                         ref={patientApppointmentRef}
+                        disabled
                     />
                 </Form.Group>
                 <div className="row">
@@ -98,7 +100,7 @@ function VitalSection() {
                     <Form.Control
                         type="number"
                         placeholder='patientBMI'
-                        value={bmi}
+                        value={bmi || 0}
                         onChange={handlePatientBMIInput}
                         ref={patientApppointmentRef}
                         disabled

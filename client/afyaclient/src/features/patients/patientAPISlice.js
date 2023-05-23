@@ -10,7 +10,9 @@ export const registerNewPatientSlice = apiSlice.injectEndpoints({
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            })
+            }),
+            transformResponse: (response, meta, arg) => response.data,
+            transformErrorResponse: (response, meta, arg) => response.status,
         }),
         postAppointmentDetail: builder.mutation({
             query: ( patientId,  appointmentInformation) => ({
@@ -27,13 +29,8 @@ export const registerNewPatientSlice = apiSlice.injectEndpoints({
                 url: '/api/patients/',
                 method: 'GET',
             }),
-            transformResponse: async (response, meta) => {
-                const status = meta.response?.status
-
-                const data = await response;
-
-                return { status, data };
-            }
+            transformResponse: async (response, meta) => response.data,
+            transformErrorResponse: (response, meta, arg) => response.status
         })
     })
 });

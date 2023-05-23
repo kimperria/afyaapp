@@ -4,53 +4,57 @@ import Alert from "react-bootstrap/Alert";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import NavBar from "../components/NavBar";
-import { Link } from "react-router-dom";
+import ServerError from "../components/ServerError";
 import { useViewAllPatientsQuery } from "../features/patients/patientAPISlice";
 
 function PatientReports() {
-  // const { data, isLoading, isFetching, error } = useViewAllPatientsQuery({
-  //   pollingInterval: 3000,
-  //   refetchOnMountOrArgChange: true,
-  //   skip: false,
-  // });
 
-  const patientList = [
-    {
-      id: 1,
-      first_name: 'Kimani',
-      last_name: 'John',
-      date_of_birth: "1947-04-26",
-      bmi: 20
-    },
-    {
-      id: 2,
-      first_name: 'Terry',
-      last_name: 'Njoki',
-      date_of_birth: "1987-04-26",
-      bmi: 18
-    },
-    {
-      id: 3,
-      first_name: 'Joy',
-      last_name: 'Wairimu',
-      date_of_birth: "1964-04-26",
-      bmi: 28
-    },
-    {
-      id: 4,
-      first_name: 'Michael',
-      last_name: 'Owiso',
-      date_of_birth: "2000-04-26",
-      bmi: 16
-    },
-    {
-      id: 5,
-      first_name: 'Nyevu',
-      last_name: 'Karisa',
-      date_of_birth: "1997-04-26",
-      bmi: 30
-    },
-  ]
+  const [patientList, setPatientList] = useState([]);
+
+  const { data, isLoading, error } = useViewAllPatientsQuery({
+    pollingInterval: 3000,
+    refetchOnMountOrArgChange: true,
+    skip: false,
+  });
+
+// sample list
+  // const patientList = [
+  //   {
+  //     id: 1,
+  //     first_name: 'Kimani',
+  //     last_name: 'John',
+  //     date_of_birth: "1947-04-26",
+  //     bmi: 20
+  //   },
+  //   {
+  //     id: 2,
+  //     first_name: 'Terry',
+  //     last_name: 'Njoki',
+  //     date_of_birth: "1987-04-26",
+  //     bmi: 18
+  //   },
+  //   {
+  //     id: 3,
+  //     first_name: 'Joy',
+  //     last_name: 'Wairimu',
+  //     date_of_birth: "1964-04-26",
+  //     bmi: 28
+  //   },
+  //   {
+  //     id: 4,
+  //     first_name: 'Michael',
+  //     last_name: 'Owiso',
+  //     date_of_birth: "2000-04-26",
+  //     bmi: 16
+  //   },
+  //   {
+  //     id: 5,
+  //     first_name: 'Nyevu',
+  //     last_name: 'Karisa',
+  //     date_of_birth: "1997-04-26",
+  //     bmi: 30
+  //   },
+  // ]
 
   const bmiState = (patientWeight) => {
     if( patientWeight < 18.5) return 'Underweight';
@@ -70,43 +74,13 @@ function PatientReports() {
     const patient_DOB = new Date(api_date)
     return patient_DOB
   }
-  patientAge(convertPatientDOB("1997-04-26"))
+
+  if (error) return <div><ServerError /></div>;
 
 
-  // const [patientList, setPatientList] = useState();
-
-
-
-  // try {
-  //   if (data?.status == 200) {
-  //     useEffect(() => {
-  //       console.log(data)
-  //       const patientList = data.data.data
-  //       setPatientList(patientList)
-  //     }, [])
-  //   } else if (error) {
-
-  //     console.error(error, 'Unable to fetch endpoint')
-  //   }
-  // } catch (e) {
-  //   console.log(e)
-  // }
-
-  // const patientAge = (date_of_birth) => {
-  //   const today = new Date();
-  //   const age = today.getFullYear() - date_of_birth.getFullYear() - 
-  //   (today.getMonth() < date_of_birth.getMonth() || 
-  //   (today.getMonth() === date_of_birth.getMonth() && today.getDate() < date_of_birth.getDate()));
-  //   return age;
-  // }
-
-  // let date_of_birth = new Date(2000, 2, 5); 
-  // const ageValue = patientAge(date_of_birth)
-  // console.log("Age", ageValue)
-
-  //   if (isLoading) return <div>Is loading</div>;
-
-  //   if (error) return <div>Error</div>;
+  useEffect(() => {
+    setPatientList(data || [])
+  }, [data])
 
   return (
     <main className="container container-fluid">

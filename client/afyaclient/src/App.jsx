@@ -10,6 +10,7 @@ import RegisterPatient from "./components/RegisterPatient";
 import Dashboard from "./screens/Dashboard";
 import PatientReports from "./screens/PatientReports";
 import PatientInformation from "./screens/PatientInformation";
+import Appointment from "./screens/Appointment";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path='/register-patient' element={<RegisterPatient />} />
         <Route path="/dashboard" element={<Dashboard />}/>
+        <Route path='appointment/:id' element={<Appointment />} />
         <Route path='/reports' element={<PatientReports />} />
         <Route path="/patient/:id" element={<PatientInformation />}/>
         <Route path='*' element={<Navigate to='/' />}/> 

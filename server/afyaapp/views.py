@@ -85,7 +85,7 @@ class PatientsDataView(generics.GenericAPIView):
 class PatientInformationView(generics.GenericAPIView):
 
     serializer_class = PatientInformationSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     
     @swagger_auto_schema(operation_summary='Get patient data by ID')

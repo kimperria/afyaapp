@@ -16,7 +16,6 @@ function PatientInformation() {
   useEffect(() => {
     if(data != null){
       setPatient(data)
-      console.log(patient)
     }
   }, [data])
 
@@ -38,10 +37,8 @@ function PatientInformation() {
               <div className="row">
                 <div className="col-md-6">
                   <h5>Full Name: {patient.first_name + ' ' + patient.last_name}</h5>
-                  <h5>Age: {patient.age}</h5>
                   <h5>Date of Birth: {patient.date_of_birth}</h5>
-
-                  <h5>BMI Status: </h5>
+                  <h5>Gender: {patient.gender}</h5>
                 </div>
                 <div className="col-md-6">
                   <h5>Last appointment: </h5>
@@ -65,6 +62,7 @@ function PatientInformation() {
                   variant="success"
                   style={{ width: "100%" }}
                   href={`/appointment/${id}`}
+                  props={patient}
                 >
                   Book Appointment
                 </Button>

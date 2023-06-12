@@ -32,7 +32,7 @@ class AppointmentDetails(models.Model):
     patient = models.ForeignKey(PatientInformation, on_delete=models.CASCADE)
     height = models.IntegerField()
     weight = models.IntegerField()
-    body_mass_index = models.IntegerField()
+    body_mass_index = models.DecimalField(max_digits=5, decimal_places=1)
     appointment_date = models.DateField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
 

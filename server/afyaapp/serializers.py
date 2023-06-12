@@ -79,13 +79,13 @@ class AppointmentSerializer(serializers.ModelSerializer):
 class CreatePatientAppointmentSerializer(serializers.ModelSerializer):
     height = serializers.IntegerField()
     weight = serializers.IntegerField()
-    body_mass_index = serializers.IntegerField()
-    patient = PatientInformationSerializer(read_only=True)
+    body_mass_index = serializers.DecimalField(max_digits=5, decimal_places=1)
+    patient_id = serializers.IntegerField()
     created_by = UserSerializer(read_only=True)
 
     class Meta:
         model = AppointmentDetails
 
-        fields = ('height', 'weight', 'body_mass_index', 'patient', 'appointment_date', 'created_by')
+        fields = ('height', 'weight', 'body_mass_index', 'patient_id', 'created_by')
 
         depth = 1

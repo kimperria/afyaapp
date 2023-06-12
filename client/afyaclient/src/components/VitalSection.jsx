@@ -1,51 +1,97 @@
-import React from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import InputGroup from 'react-bootstrap/InputGroup';
+import moment from 'moment';
+
+import { usePostAppointmentDetailMutation } from '../features/patients/patientAPISlice';
 
 function VitalSection() {
+
+    const [ appointmentDetails, {isLoading} ] = usePostAppointmentDetailMutation();
+    const [ appointmentDate, setAppointmentDate ] = useState(new Date());
+    const [ patientWeight, setPatientWeight ] = useState(0);
+    const [ patientHeight, setPatientHeight ] = useState(0);
+    const [ bmi , setBmi ] = useState(``)
+    const patientApppointmentRef = useRef();
+
+    // Server date format with moment
+    const todaysDate = moment(appointmentDate).format('YYYY/MM/DD')
+
+    const handleAppointmentDateInput = (e) => {
+        setAppointmentDate(e.target.value)
+    };
+
+    const handlePatientWeightInput = (e) => {
+        setPatientWeight(e.target.value)
+    };
+
+    const handlePatientHeightInput = (e) => {
+        setPatientHeight(e.target.value)
+    };
+
+
+    const handlePatientBMIInput = (patientWeight, patientHeight) => {
+        let newBMI = patientWeight / (patientHeight * patientHeight);
+        setBmi(newBMI);
+    };
+
+    useEffect(() => {
+        if( patientWeight != null && patientHeight !=null){
+            handlePatientBMIInput(patientWeight, patientHeight)
+        }
+    }, [patientWeight, patientHeight])
+
+
+
+    
+
+    const submitAppointmentData = async (e) => {
+        e.preventDefault()
+
+        const appointmentInfo = await appointmentDetails({patientWeight, patientHeight, bmi }).unwrap();
+
+        console.log(appointmentInfo)
+    };
+
     return (
         <section className="row mt-4">
             <Alert variant="secondary">
                 <h3 className="text-center">Patient's Vital Section</h3>
             </Alert>
-            <Form>
+            <Form onSubmit={submitAppointmentData}>
                 <Form.Group className="mb-3" controlId="formBasicFirstName">
-                    <Form.Label>Please provide today's date</Form.Label>
+                    <Form.Label>Today's date</Form.Label>
                     <Form.Control
-                        type="date"
+                        type="text"
+                        value={todaysDate}
+                        onChange={handleAppointmentDateInput}
+                        ref={patientApppointmentRef}
+                        disabled
                     />
                 </Form.Group>
                 <div className="row">
                     <div className="col">
-                        {/* <Form.Group className="mb-3" controlId="formBasicWeight">
-                            <Form.Label>Weight (kg)</Form.Label>
-                            <Form.Control
-                                type="number"
-                                placeholder="Weight"
-                            />
-                        </Form.Group> */}
                         <Form.Label>Patient's weight (to the nearest kilogram)</Form.Label>
                         <InputGroup className="mb-3">
                             <InputGroup.Text>kg</InputGroup.Text>
-                            <Form.Control aria-label="Patient's Weight (to the nearest kilogram)" />
+                            <Form.Control 
+                            aria-label="Patient's Weight (to the nearest kilogram)" 
+                            value={patientWeight} 
+                            onChange={handlePatientWeightInput} 
+                            ref={patientApppointmentRef} />
                         </InputGroup>
                     </div>
 
                     <div className="col">
-                        {/* <Form.Group className="mb-3" controlId="formBasicHeight">
-                            <Form.Label>Height (cm)</Form.Label>
-                            <Form.Control
-                                type="number"
-                                placeholder="Height"
-                            />
-                        </Form.Group> */}
-
                         <Form.Label>Patient's height (to the nearest meter)</Form.Label>
                         <InputGroup className="mb-3">
                             <InputGroup.Text>m</InputGroup.Text>
-                            <Form.Control aria-label="Patient's height (to the nearest meter)" />
+                            <Form.Control 
+                            aria-label="Patient's height (to the nearest meter)" 
+                            value={patientHeight} 
+                            onChange={handlePatientHeightInput} />
                         </InputGroup>
                     </div>
                 </div>
@@ -53,7 +99,10 @@ function VitalSection() {
                     <Form.Label>Patient's BMI</Form.Label>
                     <Form.Control
                         type="number"
-                        placeholder="Patients BMI"
+                        placeholder='patientBMI'
+                        value={bmi || 0}
+                        onChange={handlePatientBMIInput}
+                        ref={patientApppointmentRef}
                         disabled
                         size="sm"
                     />

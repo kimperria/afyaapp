@@ -28,6 +28,11 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Disabled account, please contact admin')
         
         return validated_data
+    
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
 
     
     
@@ -35,20 +40,52 @@ class PatientInformationSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     date_of_birth = serializers.DateField()
+    gender = serializers.CharField()
+    created_by = UserSerializer(read_only=True)
 
     class Meta:
         model = PatientInformation
 
-        fields = ('first_name', 'last_name', 'date_of_birth')
+        fields = ['id', 'first_name', 'last_name', 'date_of_birth', 'gender', 'registered_on', 'created_by']
+        depth = 1
+
+class CreatePatientInformationSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    date_of_birth = serializers.DateField()
+    gender = serializers.CharField()
+
+    class Meta:
+        model = PatientInformation
+
+        fields = ['first_name', 'last_name', 'date_of_birth', 'gender']
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    patient = serializers.CharField()
     height = serializers.IntegerField()
     weight = serializers.IntegerField()
     body_mass_index = serializers.IntegerField()
+    patient = PatientInformationSerializer(read_only=True)
+    created_by = UserSerializer(read_only=True)
 
     class Meta:
         model = AppointmentDetails
 
-        fields = ('patient', 'height', 'weight', 'body_mass_index')
+        fields = ['id', 'height', 'weight', 'body_mass_index', 'appointment_date', 'patient','created_by']
+
+        depth = 1
+
+
+class CreatePatientAppointmentSerializer(serializers.ModelSerializer):
+    height = serializers.IntegerField()
+    weight = serializers.IntegerField()
+    body_mass_index = serializers.DecimalField(max_digits=5, decimal_places=1)
+    patient_id = serializers.IntegerField()
+    created_by = UserSerializer(read_only=True)
+
+    class Meta:
+        model = AppointmentDetails
+
+        fields = ('height', 'weight', 'body_mass_index', 'patient_id', 'created_by')
+
+        depth = 1

@@ -1,14 +1,17 @@
 import React, { useState, useRef } from "react";
+import { redirect, Navigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
 import { useLoginMutation } from "../../features/auth/loginAPISlice";
+import Cookie from 'js-cookie';
 import { useSelector, useDispatch } from 'react-redux';
-import { setAccessToken } from "../../features/auth/authSlice";
+import { setAccessToken, setIsAuthenticated } from "../../features/auth/authSlice";
 
 function Login() {
 
-  const [login, { isLoading }] = useLoginMutation();
+  const { isAuthenticated } = useSelector(state => state.auth)
+  const [login, { isLoading, isSuccess, error }] = useLoginMutation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const userRef = useRef();
@@ -28,12 +31,17 @@ function Login() {
     e.preventDefault()
     try{
       const userData = await login({username, password}).unwrap();
-      console.log(userData)
+      // console.log(userData)
+      Cookie.set('token', JSON.stringify(userData))
+      console.log('response', isSuccess, 'loading', isLoading, 'error', error)
+      dispatch(setIsAuthenticated(true))
+      // if success redirect to dashboard
     }catch(error){
       console.log(error)
     }
 
   };
+  if (isAuthenticated) return <Navigate to='/dashboard'/>;
   return (
     <main className="container container-fluid">
       <section className="row align-items-center register_page_position">

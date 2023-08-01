@@ -1,4 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
+import { useParams } from "react-router-dom";
+import { useViewPatientIDQuery } from "../features/patients/patientAPISlice";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
@@ -9,12 +11,17 @@ import { usePostAppointmentDetailMutation } from '../features/patients/patientAP
 
 function VitalSection() {
 
+    const { id } = useParams();
     const [ appointmentDetails, {isLoading} ] = usePostAppointmentDetailMutation();
     const [ appointmentDate, setAppointmentDate ] = useState(new Date());
     const [ patientWeight, setPatientWeight ] = useState(0);
     const [ patientHeight, setPatientHeight ] = useState(0);
     const [ bmi , setBmi ] = useState(``)
     const patientApppointmentRef = useRef();
+    const [patient, setPatient] = useState({});
+    const { data, error } = useViewPatientIDQuery(id);
+    const patient_id = patient['id']
+
 
     // Server date format with moment
     const todaysDate = moment(appointmentDate).format('YYYY/MM/DD')
@@ -41,7 +48,10 @@ function VitalSection() {
         if( patientWeight != null && patientHeight !=null){
             handlePatientBMIInput(patientWeight, patientHeight)
         }
-    }, [patientWeight, patientHeight])
+        if( data != null){
+            setPatient(data)
+        }
+    }, [patientWeight, patientHeight, data])
 
 
 
@@ -50,9 +60,13 @@ function VitalSection() {
     const submitAppointmentData = async (e) => {
         e.preventDefault()
 
-        const appointmentInfo = await appointmentDetails({patientWeight, patientHeight, bmi }).unwrap();
-
-        console.log(appointmentInfo)
+        try{
+            const appointmentInfo = await appointmentDetails(patient_id, {patientWeight, patientHeight, bmi, patient_id}).unwrap();
+    
+            console.log(appointmentInfo)
+        }catch(error){
+            console.log(error)
+        }
     };
 
     return (
@@ -113,7 +127,7 @@ function VitalSection() {
                     type="submit"
                     style={{ width: "100%" }}
                 >
-                    Update information
+                    Save
                 </Button>
             </Form>
         </section>

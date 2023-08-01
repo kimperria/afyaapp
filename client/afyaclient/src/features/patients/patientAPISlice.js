@@ -15,13 +15,26 @@ export const registerNewPatientSlice = apiSlice.injectEndpoints({
       transformErrorResponse: (response, meta, arg) => response.status,
     }),
     postAppointmentDetail: builder.mutation({
-      query: (patientId, appointmentInformation) => ({
-        url: `/api/appointment/${patientId}`,
+      query: (patient_id) => ({
+        url: `/api/appointment/create/${patient_id}/`,
         method: "POST",
-        body: appointmentInformation,
         headers: {
           "Content-Type": "application/json",
         },
+        body: 
+          {
+            "height": 2,
+            "weight": [
+                "This field is required."
+            ],
+            "body_mass_index": [
+                "This field is required."
+            ],
+            "patient_id": [
+                "This field is required."
+            ]
+        }
+        
       }),
     }),
     viewAllPatients: builder.query({
